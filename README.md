@@ -1,100 +1,100 @@
+
 # Discord Audit Bot
 
-Um bot completo de auditoria para servidores Discord. Ele registra mensagens, arquivos, alterações, ações em canais de voz e muito mais. Os registros são salvos em um canal de texto e enviados diariamente em PDF.
+A complete audit bot for Discord servers. It logs messages, files, changes, voice channel actions, and much more. Logs are saved in a text channel and sent daily in PDF format.
 
-✅ Funciona com ou sem banco de dados MySQL.
-
----
-
-## 🔍 Funcionalidades
-
-- Log em tempo real de:
-  - Mensagens enviadas, editadas e apagadas
-  - Arquivos enviados e apagados (com nome, tamanho, tipo)
-  - Entradas e saídas do servidor
-  - Entrada, saída e troca de canais de voz
-  - Mute/desmute e uso do fone
-  - Ações AFK
-  - Criação/remoção de canais e cargos
-  - Alteração de nickname e avatar
-  - Banimentos e desbanimentos
-- Canal exclusivo para auditoria (ex: `#auditoria`)
-- Geração diária de **PDF com resumo de todos os eventos**
-- Integração com **banco de dados MySQL (opcional)**:
-  - Histórico estruturado
-  - Filtragem por usuário, tipo de evento, data
+✅ Works with or without a MySQL database.
 
 ---
 
-## 🚀 Instalação
+## 🔍 Features
 
-### 1. Clone o projeto
+- Real-time logging of:
+  - Sent, edited, and deleted messages  
+  - Uploaded and deleted files (with name, size, type)  
+  - Server joins and leaves  
+  - Voice channel joins, leaves, and switches  
+  - Mute/unmute and headphone usage  
+  - AFK actions  
+  - Channel and role creation/removal  
+  - Nickname and avatar changes  
+  - Bans and unbans  
+- Dedicated audit channel (e.g. `#audit`)  
+- Daily **PDF report summarizing all events**  
+- **MySQL database integration (optional)**:
+  - Structured history
+  - Filtering by user, event type, date
+
+---
+
+## 🚀 Installation
+
+### 1. Clone the project
 
 ```bash
-git clone https://github.com/seuusuario/discord-audit-bot.git
+git clone https://github.com/youruser/discord-audit-bot.git
 cd discord-audit-bot
 ```
 
-### 2. Instale as dependências
+### 2. Install dependencies
 
-Crie um ambiente virtual (opcional) e instale:
+Create a virtual environment (optional) and install:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3. Configure seu bot no Discord
+### 3. Set up your bot on Discord
 
-1. Acesse [https://discord.com/developers/applications](https://discord.com/developers/applications)
-2. Clique em **New Application** e dê um nome
-3. Vá em **Bot** > clique em **Add Bot**
-4. Vá em **OAuth2 > URL Generator**
+1. Go to [https://discord.com/developers/applications](https://discord.com/developers/applications)  
+2. Click **New Application** and give it a name  
+3. Go to **Bot** > click **Add Bot**  
+4. Go to **OAuth2 > URL Generator**
    - Scopes: `bot`
-   - Permissions: selecione:
-     - View Audit Log
-     - Manage Messages
-     - Read/Send Messages
-     - Manage Channels
-     - Ban Members
-     - e outras permissões que desejar
-5. Gere a URL, cole no navegador e adicione o bot ao seu servidor
-6. Copie o **Token** e cole no arquivo `bot.py` na linha:
+   - Permissions: select:
+     - View Audit Log  
+     - Manage Messages  
+     - Read/Send Messages  
+     - Manage Channels  
+     - Ban Members  
+     - And any other permissions needed  
+5. Generate the URL, paste it in your browser, and add the bot to your server  
+6. Copy the **Token** and paste it into the `bot.py` file on the line:
    ```python
-   TOKEN = "SEU_TOKEN_AQUI"
+   TOKEN = "YOUR_TOKEN_HERE"
    ```
-
-7. Crie um canal de texto no seu servidor chamado `#auditoria`
+7. Create a text channel in your server called `#audit`
 
 ---
 
-## 💾 Banco de Dados (opcional)
+## 💾 Database (optional)
 
-Se quiser salvar os logs em banco MySQL, configure:
+To store logs in a MySQL database, configure as follows:
 
-- No `bot.py`, altere:
+- In `bot.py`, set:
   ```python
-  SALVAR_EM_BANCO = True
+  SAVE_TO_DATABASE = True
   ```
-- Preencha as credenciais de conexão em `DB_CONFIG`
+- Fill in the connection credentials in `DB_CONFIG`
 
-### Script SQL:
+### SQL Script:
 
 ```sql
-CREATE DATABASE IF NOT EXISTS discord_auditoria;
-USE discord_auditoria;
+CREATE DATABASE IF NOT EXISTS discord_audit;
+USE discord_audit;
 
-CREATE TABLE usuarios (
+CREATE TABLE users (
     id BIGINT PRIMARY KEY,
-    nome VARCHAR(100)
+    name VARCHAR(100)
 );
 
 CREATE TABLE logs (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    usuario_id BIGINT,
-    tipo VARCHAR(50),
-    data_hora DATETIME NOT NULL,
-    mensagem TEXT NOT NULL,
-    FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+    user_id BIGINT,
+    type VARCHAR(50),
+    timestamp DATETIME NOT NULL,
+    message TEXT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id)
 );
 ```
 
@@ -102,29 +102,28 @@ CREATE TABLE logs (
 
 ## 📝 Logs
 
-- Todos os eventos são enviados em tempo real para o canal `#auditoria`
-- Às 20h, um **PDF diário com o resumo** é gerado e enviado automaticamente
+- All events are sent in real-time to the `#audit` channel  
+- At 8:00 PM, a **daily PDF summary** is automatically generated and sent
 
 ---
 
-## ⚙️ Configurações
+## ⚙️ Settings
 
-No arquivo `bot.py`, você pode configurar:
+In the `bot.py` file, you can configure:
 
-- `TOKEN`: token do seu bot
-- `ID_CANAL_LOG`: nome do canal onde serão enviados os logs
-- `SALVAR_EM_BANCO`: se `True`, ativa a gravação no banco de dados
-- `USUARIOS_RESTRITOS`: lista de IDs com horário de acesso limitado (07h às 20h)
-
----
-
-## 🤝 Contribuições
-
-Pull requests são bem-vindos! Se tiver sugestões, melhorias ou quiser integrar com outras plataformas (como dashboards, Notion ou Google Sheets), fique à vontade para colaborar.
+- `TOKEN`: your bot’s token  
+- `LOG_CHANNEL_ID`: name of the channel where logs will be sent  
+- `SAVE_TO_DATABASE`: if `True`, enables database logging  
+- `RESTRICTED_USERS`: list of user IDs with limited access time (7:00 AM to 8:00 PM)
 
 ---
 
-## 📄 Licença
+## 🤝 Contributions
+
+Pull requests are welcome! If you have suggestions, improvements, or want to integrate with other platforms (like dashboards, Notion, or Google Sheets), feel free to contribute.
+
+---
+
+## 📄 License
 
 MIT License.
-
